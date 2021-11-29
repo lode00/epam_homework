@@ -2,11 +2,11 @@
   
 ##  1) Внутри директории /usr/share/man (хранилище встроенной документации) находятся каталоги, разбитые по секциям разделов помощи (man1, man2, man3) и по языкам (es, fr, ru).Используя команду ls, необходимо вывести на экран все файлы, которые расположены в секционных директориях /usr/share/man/manX и содержат слово "config" в имени.Одним вызовом ls найти все файлы, содержащие слово "system" в каталогах /usr/share/man/man1 и /usr/share/man/man7 # 
   
-[lode00@localhost man]$ find /usr/share/man/man? | grep config
+[lode00@localhost man]$  find /usr/share/man/man?/*config*
 
-[lode00@localhost man]$ ls /usr/share/man/man? | grep config
+[lode00@localhost man]$ ls /usr/share/man/man?/*config*
 
-[lode00@localhost man]$ ls /usr/share/man/man[1,7] | grep system
+[lode00@localhost man]$ ls /usr/share/man/man[1,7]/*system*
 
 
 ## 2) Самостоятельно изучить команду find, предназначенную для поиска файлов/папок по заданным условиям (man find, find --help).Найти в директории /usr/share/man все файлы, которые содержат слово "help" в имени, найти там же все файлы, имя которых начинается на "conf".Какие действия мы можем выполнить с файлами, найденными командой find (не запуская других команд)? Приведите любой пример с комментарием.
@@ -48,13 +48,9 @@ obsoletes=1
 ## file_name2.md в file_name2
 ## file_name3.md в file_name3.md.latest
 ## file_name1.textdoc в file_name1.txt
-
-Тут мы могли бы просто создавать   touch file_name{1..3}.md, а дальше последовательно делать все через mv. Но можно сделать 2 командами и так:
-[lode00@localhost ~]$ touch file_name{1..3}.md |ls *| mv file_name1.md file_name1.textdoc | mv file_name2.md file_name2 | mv file_name3.md file_name3.md.latest 
-[lode00@localhost ~]$ ls
-file_name1.md  file_name1.textdoc  file_name2  file_name2.md  file_name3.md  file_name3.md.latest
-[lode00@localhost ~]$ rm file_name{1..3}.md
-[lode00@localhost ~]$ mv file_name1.textdoc file_name1.txt
+Да, тут накосячил прям сильно, исправил.
+[lode00@localhost ~]$ touch file_name{1..3}.md &&  mv file_name1{.md,.textdoc} && mv file_name2{.md,} && mv file_name3.md{,.latest}
+[lode00@localhost ~]$ mv file_name1.{textdoc,txt}
 
 ## 5) Перейдите в директорию /mnt. Напишите как можно больше различных вариантов команды cd, с помощью которых вы можете вернуться обратно в домашнюю директорию#
 вашего пользователя. 
@@ -83,9 +79,9 @@ a1   a13  a17  a20  a24  a28  a31  a35  a39  a42  a46  a5   a53  a57  a60  a64  
 a10  a14  a18  a21  a25  a29  a32  a36  a4   a43  a47  a50  a54  a58  a61  a65  a69  a72  a76  a8   a83  a87  a90  a94  a98
 a11  a15  a19  a22  a26  a3   a33  a37  a40  a44  a48  a51  a55  a59  a62  a66  a7   a73  a77  a80  a84  a88  a91  a95  a99
 
-[lode00@localhost new]$ cp a{0..33} ~/in-process/tread0 | cp a{34..66} ~/in-process/tread1  | cp a{67..99} ~/in-process/tread2 | tree ~/in-proccess/
+[lode00@localhost new]$ cp a{0..33} ~/in-process/tread0 && cp a{34..66} ~/in-process/tread1 && cp a{67..99} ~/in-process/tread2 && tree ~/in-proccess/
 
-[lode00@localhost in-process]$ mv tread0/a{0..33} tread1/a{34..66} tread2/a{67..99} ~/processed/ | cd ~ | tree
+[lode00@localhost in-process]$ mv tread0/a{0..33} tread1/a{34..66} tread2/a{67..99} ~/processed/ && tree
 
 
 Для сравнения кол-ва файлов и удаления если одинаковое кол-во - написал скрипт на bash:
@@ -105,13 +101,11 @@ fi
 ## Необходимо предоставить модицицированную команду, результатом которой является следующий вывод: 
 ## file1 file2 file3#
 
-
-Можно попробовать так, но мы тогда не сможем сделать горизонтальную табуляцию (лично у меня \t не работает  :(( )
+Исправил в самом конце.
 [lode00@localhost ~]$ for x in `seq $a $b`; do echo -e  "file$x";   done
 file1
 file2
 file3
-
 Однако через sed работает все на ура.
 [lode00@localhost ~]$ echo -e `seq $a $b | sed 's/^/file/'`
 file1 file2 file3
