@@ -120,8 +120,9 @@ file3
 Однако через sed работает все на ура.
 [lode00@localhost ~]$ echo -e `seq $a $b | sed 's/^/file/'`
 file1 file2 file3
-
-
+Или через xargs, если нужно чтобы работал именно echo file{$a..$b}:
+[lode00@localhost ~]$echo file{$a..$b} | xargs -I@ bash -c 'echo @'
+file1 file2 file3
 
 
 
