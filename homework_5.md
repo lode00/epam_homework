@@ -23,17 +23,19 @@
 ```
 * Terminate one of them. (Any)
 ```bash
-[lode00@localhost ~]$ kill -n 18 %1
+[lode00@localhost ~]$ kill %2
+
 ```
 * To other send a SIGCONT in two different ways.
 ```bash
-[lode00@localhost ~]$ kill -SIGTERM %2
-[lode00@localhost ~]$ kill %3
+[lode00@localhost ~]$ kill -s sigcont %2
+[lode00@localhost ~]$ kill -n 18 %1
 ```
 
 * Kill one by PID and the second one by job ID
 ```bash
 [lode00@localhost ~]$ kill 1555
+[lode00@localhost ~]$ kill %3
 ```
 
 ## systemd
@@ -54,7 +56,7 @@ var3=/etc/systemd/system/second.timer
 if  [ ! -f "$var1" ]; then
    cat << 'EOF' > $var1
 [Unit]
-Decription=First daemon
+Description=First daemon
 
 [Service]
 ExecStart=/bin/bash -c 'sleep 10 && echo 1 > /tmp/homework'
@@ -67,7 +69,7 @@ fi
 if  [ ! -f "$var2" ]; then
    cat << 'EOF' > $var2
 [Unit]
-Decription=Second daemon
+Description=Second daemon
 After=one.service
 Wants=one.service
 
@@ -134,7 +136,7 @@ Dec 14 23:07:04 localhost.localdomain systemd[1]: Started one.service.
 * Create an anacron job which executes a script with echo Hello > /opt/hello and runs 
 every 2 days
 
- Заходим в /etc/crontab и добавляем внизу строку
+ Заходим в /etc/anacrontab и добавляем внизу строку
 ```bash
 SHELL=/bin/sh
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
@@ -148,17 +150,49 @@ START_HOURS_RANGE=3-22
 1       5       cron.daily              nice run-parts /etc/cron.daily
 7       25      cron.weekly             nice run-parts /etc/cron.weekly
 @monthly 45     cron.monthly            nice run-parts /etc/cron.monthly
-2       0        homework               echo 'echo Hello > /opt/hello'> /home/script.sh | bash ~/script.sh
+2       0        homework               echo 'echo Hello > /opt/hello'> /home/script.sh && bash /home/script.sh
 ```
+#### Второй вариант  решения:
+1.Cоздаем отдельно файл  /home/lode00/anacrhw.sh:
+```bash
+#!/bin/bash
+echo Hello > /opt/hello
+```
+2.Заходим в /etc/anacrontab и добавляем внизу строку
+```bash
+SHELL=/bin/sh
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+# the maximal random delay added to the base delay of the jobs
+RANDOM_DELAY=45
+# the jobs will be started during the following hours only
+START_HOURS_RANGE=3-22
+
+#period in days   delay in minutes   job-identifier   command
+1       5       cron.daily              nice run-parts /etc/cron.daily
+7       25      cron.weekly             nice run-parts /etc/cron.weekly
+@monthly 45     cron.monthly            nice run-parts /etc/cron.monthly
+2       0        hwnew                  /home/lode00/anacrhw.sh
+```
+
 ```bash
 [root@localhost opt]# anacron -f
 ```
 * Create a cron job which executes the same command (will be better to create a script for 
 this) and runs it in 1 minute after system boot.
 ```bash
-@reboot sleep 60 && echo 'echo Hello > /opt/hello'> /home/script.sh | bash ~/script.sh
+@reboot sleep 60 && echo 'echo Hello > /opt/hello'> /home/cronscript.sh && bash /home/cronscript.sh
 ```
-
+#### Второй вариант  решения:
+1.Cоздаем отдельно файл  /home/lode00/cronhw.sh:
+```bash
+#!/bin/bash
+echo Hello > /opt/hello
+```
+```bash
+[lode00@localhost ~]$crontab -e
+@reboot sleep 60 && /home/lode00.cronhw.sh
+```
 * Restart your virtual machine and check previous job proper execution
 ```bash
 [lode00@localhost ~]$ cat /opt/hello
@@ -186,6 +220,8 @@ sleep   1561 lode00    0u   CHR  136,0       0t0        3 /dev/pts/0
 sleep   1561 lode00    1w   REG  253,0         0  1068865 /home/lode00/out.log
 sleep   1561 lode00    2w   REG  253,0         0  1068866 /home/lode00/err.log
 ```
+#### И откуда же sleep принимает stdin?
+u for read and write access, значит я так понял, что /dev/pts/0
 Можно и так:
 ```bash
 [lode00@localhost ~]$ lsof -c sleep
