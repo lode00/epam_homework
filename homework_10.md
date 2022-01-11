@@ -70,7 +70,7 @@ drwxr-xr-x   2 root     root            0 Jan 11 03:43 kernel/x86/microcode
 ```
 * Study dracut utility that is used for rebuilding initrd image. Give an example for adding driver/kernel module for your initrd and recreating it.
 ```bash
-[root@localhost modules]# # dracut 1__dracut.img 3.10.0-1160.45.1.el7.x86_64
+[root@localhost modules]# # dracut my__dracut.img 3.10.0-1160.45.1.el7.x86_64
 [root@localhost modules]# lsinitrd my__dracut.img | head -n 12
 Image: my__dracut.img: 21M
 ========================================================================
