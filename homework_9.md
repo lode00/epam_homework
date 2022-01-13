@@ -26,6 +26,8 @@ PREFIX=24
 ```
 ```bash
 [root@localhost ~]$ reboot
+or 
+[lode00@localhost init.d]$ sudo systemctl restart network
 [lode00@localhost ~]$ ip a show enp0s8
 3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP                                                                                                              group default qlen 1000
     link/ether 08:00:27:79:08:6e brd ff:ff:ff:ff:ff:ff
