@@ -71,4 +71,5 @@ or
 
 [lode00@localhost ~]$ curl http://curl.haxx.se
 [lode00@localhost ~]$ tcpdump -A -s 0 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)
+[lode00@localhost ~]$sudo tcpdump -A -s 0 'src 151.101.114.49 or 10.0.2.15 and dst 10.0.2.15 or 151.101.114.49 and tcp port 80'
 ![image](https://user-images.githubusercontent.com/62034233/147776361-1a226e45-f35a-4a96-bfc9-acde7fff8312.png)
